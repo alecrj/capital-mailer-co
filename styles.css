@@ -584,6 +584,50 @@ strong { font-weight: 600; color: var(--ink); }
   background: var(--paper);
 }
 
+/* Hero shows BOTH cards stacked with offset for visual depth */
+.hero__card[data-preview] { position: relative; }
+.hero__image--front,
+.hero__image--back {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+.hero__image--back {
+  position: absolute;
+  top: 32px;
+  left: 28px;
+  width: calc(100% - 56px);
+  transform: rotate(2.5deg);
+  z-index: 1;
+  box-shadow:
+    0 14px 30px rgba(26, 26, 26, 0.12),
+    0 4px 10px rgba(26, 26, 26, 0.06);
+}
+.hero__image--front {
+  transform: rotate(-1.5deg);
+  z-index: 2;
+  box-shadow:
+    0 24px 50px rgba(26, 26, 26, 0.18),
+    0 6px 14px rgba(26, 26, 26, 0.1);
+}
+.hero__card[data-preview]:hover .hero__image--front {
+  transform: rotate(0);
+  transition: transform .35s ease;
+}
+.hero__card[data-preview]:hover .hero__image--back {
+  transform: rotate(0) translateY(8px);
+  transition: transform .35s ease;
+}
+
+/* Mobile: hide the back peek, show only front (already simple PNG) */
+@media (max-width: 900px) {
+  .hero__image--back { display: none; }
+  .hero__image--front {
+    position: static;
+    transform: rotate(-0.6deg);
+  }
+}
+
 /* Hero card is tappable on every viewport (cursor zoom-in + focus ring) */
 .hero__card[data-preview] {
   cursor: zoom-in;
