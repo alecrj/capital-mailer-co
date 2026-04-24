@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20260424b" />
+<link rel="stylesheet" href="styles.css?v=20260424d" />
 </head>
 <body class="preload">
 
@@ -687,31 +687,36 @@
   })();
 </script>
 
-<!-- Card preview enlarge modal: tap the small landscape preview to see it full-screen in portrait -->
-<dialog class="card-dialog" id="card-dialog" aria-label="Enlarged card preview">
-  <button class="card-dialog__close" type="button" aria-label="Close enlarged view">&#10005;</button>
-  <div class="card-dialog__inner"></div>
-</dialog>
+<!-- Card preview enlarge lightbox: tap the small preview to see the card full-screen landscape -->
+<div class="card-lightbox" id="card-lightbox" role="dialog" aria-modal="true" aria-label="Enlarged card preview" hidden>
+  <button class="card-lightbox__close" type="button" aria-label="Close enlarged view">&#10005;</button>
+  <div class="card-lightbox__stage">
+    <div class="card-lightbox__inner"></div>
+  </div>
+  <div class="card-lightbox__rotate-hint" aria-hidden="true">Rotate phone for best view</div>
+</div>
 
 <script>
   (function () {
-    var dialog = document.getElementById('card-dialog');
-    if (!dialog || typeof dialog.showModal !== 'function') return;
-    var inner = dialog.querySelector('.card-dialog__inner');
-    var closeBtn = dialog.querySelector('.card-dialog__close');
+    var box = document.getElementById('card-lightbox');
+    if (!box) return;
+    var inner = box.querySelector('.card-lightbox__inner');
+    var closeBtn = box.querySelector('.card-lightbox__close');
 
     function openFor(fig) {
       var source = fig.querySelector('.card-fill, .card-back');
       if (!source) return;
-      var clone = source.cloneNode(true);
-      inner.replaceChildren(clone);
-      dialog.dataset.variant = fig.dataset.preview || '';
-      dialog.showModal();
+      inner.replaceChildren(source.cloneNode(true));
+      box.dataset.variant = fig.dataset.preview || '';
+      box.hidden = false;
       document.documentElement.style.overflow = 'hidden';
+      closeBtn.focus();
     }
 
-    function closeDialog() {
-      dialog.close();
+    function closeLightbox() {
+      box.hidden = true;
+      document.documentElement.style.overflow = '';
+      inner.replaceChildren();
     }
 
     document.querySelectorAll('.preview[data-preview]').forEach(function (fig) {
@@ -724,13 +729,15 @@
       });
     });
 
-    closeBtn.addEventListener('click', closeDialog);
-    dialog.addEventListener('click', function (e) {
-      if (e.target === dialog || e.target === inner) closeDialog();
+    closeBtn.addEventListener('click', closeLightbox);
+    box.addEventListener('click', function (e) {
+      // Click on backdrop or stage (but not inside the card) closes
+      if (e.target === box || e.target.classList.contains('card-lightbox__stage') || e.target.classList.contains('card-lightbox__inner')) {
+        closeLightbox();
+      }
     });
-    dialog.addEventListener('close', function () {
-      document.documentElement.style.overflow = '';
-      inner.replaceChildren();
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !box.hidden) closeLightbox();
     });
   })();
 </script>

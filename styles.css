@@ -552,25 +552,18 @@ strong { font-weight: 600; color: var(--ink); }
 }
 
 /* Click/tap target: the whole preview opens the enlarge modal */
+/* Tap target on the preview figures — cursor + focus ring only.
+   Deliberately NO hover transforms: the cards already have their natural tilt,
+   and overriding it here changed desktop behavior. Touch-only affordance below. */
 .preview[data-preview] {
   cursor: zoom-in;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  transition: transform .25s ease;
 }
 .preview[data-preview]:focus-visible {
   outline: 2px solid var(--red);
   outline-offset: 6px;
   border-radius: 4px;
-}
-.preview[data-preview]:hover .card-fill,
-.preview[data-preview]:hover .card-back {
-  transform: rotate(0) translateY(-2px);
-}
-.preview[data-preview]:active .card-fill,
-.preview[data-preview]:active .card-back {
-  transform: scale(0.985) !important;
-  transition: transform .12s ease;
 }
 
 /* Mobile-only "Tap to enlarge" hint shown below each card */
@@ -584,7 +577,7 @@ strong { font-weight: 600; color: var(--ink); }
   text-align: center;
   margin-top: 14px;
   font-weight: 700;
-  opacity: 0.78;
+  opacity: 0.8;
 }
 .preview__hint-arrow {
   color: var(--red);
@@ -595,150 +588,115 @@ strong { font-weight: 600; color: var(--ink); }
   vertical-align: -1px;
 }
 
-/* ===== Enlarge modal ===== */
-.card-dialog {
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: var(--cream);
-  overflow: auto;
-  overscroll-behavior: contain;
-  color: var(--ink);
-}
-.card-dialog::backdrop {
-  background: rgba(12, 9, 8, 0.72);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-.card-dialog[open] {
+/* ===== Enlarge lightbox =====
+   Plain div overlay (not <dialog>) for max compatibility. Shows the card in
+   its natural LANDSCAPE orientation at the biggest size the viewport allows.
+   On a portrait phone we auto-rotate the card 90° so it fills the screen
+   vertically-oriented — user tilts phone sideways to read naturally. */
+.card-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(12, 9, 8, 0.92);
   display: flex;
-  flex-direction: column;
-  animation: card-dialog-in .22s ease-out;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: card-lightbox-in .22s ease-out;
+  cursor: zoom-out;
 }
-@keyframes card-dialog-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+.card-lightbox[hidden] { display: none; }
+@keyframes card-lightbox-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-.card-dialog__close {
+
+.card-lightbox__close {
   position: fixed;
   top: 14px;
   right: 14px;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1.5px solid rgba(26, 26, 26, 0.2);
+  border: none;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
   z-index: 10;
-  box-shadow: 0 6px 18px rgba(26, 26, 26, 0.14);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   transition: background .18s ease, color .18s ease, transform .18s ease;
 }
-.card-dialog__close:hover,
-.card-dialog__close:focus-visible {
+.card-lightbox__close:hover,
+.card-lightbox__close:focus-visible {
   background: var(--red);
   color: var(--paper);
-  border-color: var(--red);
-  transform: scale(1.05);
+  transform: scale(1.06);
   outline: none;
 }
-.card-dialog__inner {
-  flex: 1 0 auto;
+
+.card-lightbox__stage {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 72px 18px 32px;
-  min-height: 100%;
-  box-sizing: border-box;
+  overflow: hidden;
+}
+.card-lightbox__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Portrait card rendering inside the modal — same card, rotated orientation.
-   Size based on min(420px ceiling, what fits in viewport height at 6:11 aspect). */
-.card-dialog__inner .card-fill,
-.card-dialog__inner .card-back {
-  width: min(420px, calc((100vh - 120px) * 6 / 11));
-  max-width: 100%;
-  aspect-ratio: 6 / 11;
+/* Default (desktop + landscape phones): card renders naturally landscape */
+.card-lightbox .card-fill,
+.card-lightbox .card-back {
+  width: min(calc(100vw - 48px), calc((100vh - 88px) * 11 / 6));
+  max-width: none;
+  aspect-ratio: 11 / 6;
   transform: rotate(0) !important;
   flex-shrink: 0;
+  cursor: default;
 }
 
-/* Front card: 2 cols × 4 rows of ads */
-.card-dialog__inner .card-fill {
-  padding: 16px 18px 18px;
-  gap: 12px;
+/* Rotate-phone hint: only shown on portrait mobile */
+.card-lightbox__rotate-hint {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(245, 241, 232, 0.82);
+  background: rgba(26, 26, 26, 0.5);
+  padding: 10px 18px;
+  border: 1px solid rgba(245, 241, 232, 0.18);
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-.card-dialog__inner .card-fill__grid--front {
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 8px;
-}
-.card-dialog__inner .card-fill__title { font-size: 19px; letter-spacing: 0.05em; }
-.card-dialog__inner .card-fill__sub { font-size: 9px; margin-top: 5px; }
 
-/* Back card: stacked ads (top ~75%) + mail block (bottom ~25%) */
-.card-dialog__inner .card-back__split {
-  grid-template-columns: 1fr;
-  grid-template-rows: 2.8fr 1fr;
-  height: 100%;
-}
-.card-dialog__inner .card-back__ads {
-  padding: 14px 14px 10px;
-  gap: 8px;
-}
-.card-dialog__inner .card-back__submasthead {
-  font-size: 9.5px;
-  letter-spacing: 0.22em;
-}
-.card-dialog__inner .card-fill__grid--back {
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 8px;
-}
-.card-dialog__inner .card-back__mail {
-  border-left: none;
-  border-top: 1px dashed rgba(26, 26, 26, 0.25);
-  padding: 12px 14px 12px;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 10px;
-  row-gap: 8px;
-}
-.card-dialog__inner .card-back__mail-top {
-  flex-direction: row;
-  gap: 12px;
-  flex: 1 1 auto;
-  align-items: flex-start;
-}
-.card-dialog__inner .card-back__return { font-size: 9px; }
-.card-dialog__inner .card-back__return-name { font-size: 10px; }
-.card-dialog__inner .card-back__indicia { font-size: 7.5px; padding: 5px 7px; }
-.card-dialog__inner .card-back__address {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-  text-align: right;
-  flex: 0 1 auto;
-}
-.card-dialog__inner .card-back__ecrwss { font-size: 7.5px; }
-.card-dialog__inner .card-back__postal { font-size: 12px; letter-spacing: 0.05em; }
-.card-dialog__inner .card-back__city { font-size: 9.5px; }
-.card-dialog__inner .card-back__stamp {
-  position: static;
-  width: 38px;
-  height: 38px;
-  align-self: flex-end;
-  flex-shrink: 0;
+/* Portrait phones: rotate the landscape card 90° so it fills the tall viewport.
+   The "width" before rotation becomes the card's on-screen height after rotation;
+   we size it so after rotating, the card spans ~100vh-48px and its rotated width
+   (which is height / (11/6)) doesn't overflow 100vw. */
+@media (max-width: 900px) and (orientation: portrait) {
+  .card-lightbox .card-fill,
+  .card-lightbox .card-back {
+    width: min(calc(100vh - 48px), calc((100vw - 32px) * 11 / 6));
+    transform: rotate(90deg) !important;
+  }
+  .card-lightbox__rotate-hint { display: block; }
 }
 
 /* ---------- Filled postcard (front) ---------- */
