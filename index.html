@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20260424e" />
+<link rel="stylesheet" href="styles.css?v=20260424f" />
 </head>
 <body class="preload">
 
@@ -62,8 +62,9 @@
     </div>
 
     <!-- Postcard mockup (hero version — front + back stacked) -->
-    <div class="hero__card" aria-hidden="true">
-      <div class="hero__stack">
+    <div class="hero__card" data-preview="hero" data-image="assets/card-front.png" role="button" tabindex="0" aria-label="Tap to enlarge the Killearn Neighbors Card">
+      <img class="hero__image" src="assets/card-front.png" alt="Killearn Neighbors Card — 8 local businesses on one postcard going to 2,500 Killearn homes" />
+      <div class="hero__stack" aria-hidden="true">
         <div class="card-fill card-fill--hero card-fill--hero-front">
           <div class="card-fill__masthead">
             <div class="card-fill__title">KILLEARN NEIGHBORS CARD</div>
@@ -725,7 +726,7 @@
       inner.replaceChildren();
     }
 
-    document.querySelectorAll('.preview[data-preview]').forEach(function (fig) {
+    document.querySelectorAll('[data-preview]').forEach(function (fig) {
       fig.addEventListener('click', function () { openFor(fig); });
       fig.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {

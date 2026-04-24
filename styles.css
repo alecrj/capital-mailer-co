@@ -572,7 +572,8 @@ strong { font-weight: 600; color: var(--ink); }
    pixel-perfect snapshot of the desktop render, so mobile looks identical
    to desktop. Default: image is hidden, HTML card renders (desktop behavior).
    On small screens: swap them. */
-.preview__image {
+.preview__image,
+.hero__image {
   display: none;
   width: 100%;
   height: auto;
@@ -583,10 +584,26 @@ strong { font-weight: 600; color: var(--ink); }
   background: var(--paper);
 }
 
+/* Hero card is tappable on every viewport (cursor zoom-in + focus ring) */
+.hero__card[data-preview] {
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.hero__card[data-preview]:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+
 @media (max-width: 900px) {
-  .preview__image { display: block; }
+  .preview__image,
+  .hero__image { display: block; }
+
+  /* Hide HTML card renderings on mobile — PNG image replaces them */
   .preview[data-preview] .card-fill,
   .preview[data-preview] .card-back { display: none; }
+  .hero__card[data-preview] .hero__stack { display: none; }
 }
 
 /* Mobile-only "Tap to enlarge" hint shown below each card */
@@ -675,9 +692,10 @@ strong { font-weight: 600; color: var(--ink); }
   justify-content: center;
 }
 
-/* Default (desktop + landscape phones): card image renders naturally landscape */
+/* Default (desktop + landscape phones): image fills ~98% of the viewport.
+   Tight 16px padding off the edges, whichever dimension constrains wins. */
 .card-lightbox__img {
-  width: min(calc(100vw - 48px), calc((100vh - 88px) * 11 / 6));
+  width: min(calc(100vw - 24px), calc((100vh - 48px) * 11 / 6));
   height: auto;
   aspect-ratio: 11 / 6;
   object-fit: contain;
@@ -685,13 +703,13 @@ strong { font-weight: 600; color: var(--ink); }
   transform: rotate(0);
   cursor: default;
   box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.4),
-    0 10px 20px rgba(0, 0, 0, 0.2);
+    0 30px 60px rgba(0, 0, 0, 0.45),
+    0 10px 20px rgba(0, 0, 0, 0.25);
 }
-/* Keep the old card selectors for safety, in case cached HTML still clones an HTML card */
+/* Fallback: same sizing for cached HTML card renders */
 .card-lightbox .card-fill,
 .card-lightbox .card-back {
-  width: min(calc(100vw - 48px), calc((100vh - 88px) * 11 / 6));
+  width: min(calc(100vw - 24px), calc((100vh - 48px) * 11 / 6));
   max-width: none;
   aspect-ratio: 11 / 6;
   transform: rotate(0) !important;
@@ -728,12 +746,12 @@ strong { font-weight: 600; color: var(--ink); }
    (which is height / (11/6)) doesn't overflow 100vw. */
 @media (max-width: 900px) and (orientation: portrait) {
   .card-lightbox__img {
-    width: min(calc(100vh - 48px), calc((100vw - 32px) * 11 / 6));
+    width: min(calc(100vh - 24px), calc((100vw - 16px) * 11 / 6));
     transform: rotate(90deg);
   }
   .card-lightbox .card-fill,
   .card-lightbox .card-back {
-    width: min(calc(100vh - 48px), calc((100vw - 32px) * 11 / 6));
+    width: min(calc(100vh - 24px), calc((100vw - 16px) * 11 / 6));
     transform: rotate(90deg) !important;
   }
   .card-lightbox__rotate-hint { display: block; }
