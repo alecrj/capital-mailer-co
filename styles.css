@@ -584,48 +584,69 @@ strong { font-weight: 600; color: var(--ink); }
   background: var(--paper);
 }
 
-/* Hero shows BOTH cards stacked with offset for visual depth */
-.hero__card[data-preview] { position: relative; }
+/* Hero shows BOTH cards — back peeks above and offset, front sits over it.
+   Both fully visible: back is rotated and shifted up-left so its bottom-right
+   shows behind the front card. Front overlaps the lower-right portion. */
+.hero__card[data-preview] {
+  position: relative;
+  padding-top: 18%;       /* room for back card to peek above */
+  padding-right: 6%;      /* room for front card to extend right */
+}
 .hero__image--front,
 .hero__image--back {
   display: block;
-  width: 100%;
-  position: relative;
+  width: 88%;
+  position: absolute;
 }
 .hero__image--back {
-  position: absolute;
-  top: 32px;
-  left: 28px;
-  width: calc(100% - 56px);
-  transform: rotate(2.5deg);
+  top: 0;
+  left: 0;
+  transform: rotate(-3deg);
   z-index: 1;
   box-shadow:
-    0 14px 30px rgba(26, 26, 26, 0.12),
-    0 4px 10px rgba(26, 26, 26, 0.06);
+    0 18px 36px rgba(26, 26, 26, 0.14),
+    0 5px 12px rgba(26, 26, 26, 0.06);
 }
 .hero__image--front {
-  transform: rotate(-1.5deg);
+  bottom: 0;
+  right: 0;
+  transform: rotate(2deg);
   z-index: 2;
   box-shadow:
-    0 24px 50px rgba(26, 26, 26, 0.18),
-    0 6px 14px rgba(26, 26, 26, 0.1);
+    0 26px 54px rgba(26, 26, 26, 0.2),
+    0 8px 16px rgba(26, 26, 26, 0.1);
+}
+.hero__card[data-preview] {
+  /* Maintain aspect ratio so the absolute children have a stable container */
+  aspect-ratio: 11 / 8.5;
+  width: 100%;
 }
 .hero__card[data-preview]:hover .hero__image--front {
-  transform: rotate(0);
+  transform: rotate(0) translate(-8px, -8px);
   transition: transform .35s ease;
 }
 .hero__card[data-preview]:hover .hero__image--back {
-  transform: rotate(0) translateY(8px);
+  transform: rotate(-1deg) translate(8px, 8px);
   transition: transform .35s ease;
 }
 
-/* Mobile: hide the back peek, show only front (already simple PNG) */
+/* Mobile: stack vertically with both visible, simple offsets */
 @media (max-width: 900px) {
-  .hero__image--back { display: none; }
-  .hero__image--front {
-    position: static;
-    transform: rotate(-0.6deg);
+  .hero__card[data-preview] {
+    aspect-ratio: auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
+  .hero__image--front,
+  .hero__image--back {
+    position: static;
+    width: 100%;
+    transform: rotate(0);
+  }
+  .hero__image--front { transform: rotate(-0.6deg); }
+  .hero__image--back  { transform: rotate(0.6deg); }
 }
 
 /* Hero card is tappable on every viewport (cursor zoom-in + focus ring) */
