@@ -17,24 +17,23 @@
 </head>
 <body class="preload">
 
-<!-- Top postal bar -->
-<div class="postal-bar">
-  <span class="postal-bar__left">★ ★ ★ &nbsp; CAPITAL MAILER CO. &nbsp; ★ ★ ★</span>
-  <span class="postal-bar__right">TALLAHASSEE &middot; FLORIDA</span>
-</div>
+<!-- Thin postal stripe (decorative) -->
+<div class="postal-stripe"></div>
 
-<!-- Nav -->
-<header class="nav">
-  <a class="nav__brand" href="#top">
-    <img class="nav__logo" src="assets/logo-full.png" alt="Capital Mailer Co." />
-  </a>
-  <nav class="nav__links">
-    <a href="#offer">The offer</a>
-    <a href="#how">How it works</a>
-    <a href="#slots">Slots</a>
-    <a href="#faq">FAQ</a>
-    <a class="nav__cta" href="#claim">Claim a spot →</a>
-  </nav>
+<!-- Sticky topbar with logo + pill nav + CTA -->
+<header class="topbar" id="topbar">
+  <div class="topbar__inner">
+    <a class="topbar__brand" href="#top" aria-label="Capital Mailer Co.">
+      <img class="topbar__logo" src="assets/logo-full.png" alt="Capital Mailer Co." />
+    </a>
+    <nav class="topbar__nav">
+      <a href="#offer">The offer</a>
+      <a href="#how">How it works</a>
+      <a href="#slots">Slots</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="topbar__cta" href="#claim">Claim a spot →</a>
+  </div>
 </header>
 
 <!-- Hero -->
@@ -651,6 +650,38 @@
       }
     });
   });
+
+  // Topbar show/hide on scroll (hide on scroll down, show on scroll up)
+  (function () {
+    var topbar = document.getElementById('topbar');
+    if (!topbar) return;
+    var lastY = window.scrollY;
+    var ticking = false;
+
+    function update() {
+      var y = window.scrollY;
+      if (y < 80) {
+        topbar.classList.remove('topbar--hide');
+        topbar.classList.remove('topbar--scrolled');
+      } else {
+        topbar.classList.add('topbar--scrolled');
+        if (y > lastY + 8) {
+          topbar.classList.add('topbar--hide');
+        } else if (y < lastY - 8) {
+          topbar.classList.remove('topbar--hide');
+        }
+      }
+      lastY = y;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
 </script>
 </body>
 </html>
