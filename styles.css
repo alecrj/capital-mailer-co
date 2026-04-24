@@ -1833,44 +1833,35 @@ strong { font-weight: 600; color: var(--ink); }
   .hero__stack .card-back--hero { display: none; }
   .hero__stack { gap: 0; }
 
-  /* Preview-section back card: stack ads + mail block vertically on mobile so both are readable */
-  .card-back { aspect-ratio: auto; }
-  .card-back__split {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+  /* Mobile preview cards: keep the true 11:6 landscape aspect ratio (6"x11" physical
+     card), but wrap in a horizontal scroll container with min-width big enough that
+     each ad cell stays legible. User swipes horizontally to see the full card —
+     same pattern as responsive data tables. Container padding also breaks out so
+     the card uses full viewport width on the right edge. */
+  .preview {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    margin: 0 -20px;
+    padding: 0 20px;
   }
-  .card-back__ads {
-    padding: 14px 14px 10px;
+  .preview .card-fill,
+  .preview .card-back {
+    min-width: 560px;
   }
-  .card-back__mail {
-    border-left: none;
-    border-top: 1px dashed rgba(26, 26, 26, 0.2);
-    padding: 12px 14px 14px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .card-back__mail-top {
-    flex-direction: row;
-    gap: 12px;
-    flex: 1 1 auto;
-    align-items: flex-start;
-  }
-  .card-back__address {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-  }
-  .card-back__stamp {
-    position: static;
-    align-self: flex-end;
-  }
-
-  /* Front card: slight aspect loosening so ads read bigger on phone */
-  .card-fill {
-    aspect-ratio: 16 / 10;
+  /* Subtle swipe hint below each preview card */
+  .preview::after {
+    content: "swipe to see full card →";
+    display: block;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-top: 10px;
+    opacity: 0.7;
   }
   .slot-grid { grid-template-columns: repeat(2, 1fr); }
   .stats { grid-template-columns: 1fr; }
