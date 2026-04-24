@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=20260424d" />
+<link rel="stylesheet" href="styles.css?v=20260424e" />
 </head>
 <body class="preload">
 
@@ -239,8 +239,9 @@
     </p>
 
     <div class="preview-grid">
-      <figure class="preview" data-preview="front" role="button" tabindex="0" aria-label="Tap to enlarge front of card">
+      <figure class="preview" data-preview="front" data-image="assets/card-front.png" role="button" tabindex="0" aria-label="Tap to enlarge front of card">
         <figcaption class="preview__label">Front &middot; 8 ads + masthead</figcaption>
+        <img class="preview__image" src="assets/card-front.png" alt="Front of the Killearn Neighbors Card with 8 local business ads" />
         <div class="card-fill">
           <div class="card-fill__masthead">
             <div class="card-fill__title">KILLEARN NEIGHBORS CARD</div>
@@ -260,8 +261,9 @@
         <span class="preview__hint" aria-hidden="true">Tap to enlarge <span class="preview__hint-arrow">&#8599;</span></span>
       </figure>
 
-      <figure class="preview" data-preview="back" role="button" tabindex="0" aria-label="Tap to enlarge back of card">
+      <figure class="preview" data-preview="back" data-image="assets/card-back.png" role="button" tabindex="0" aria-label="Tap to enlarge back of card">
         <figcaption class="preview__label">Back &middot; 6 ads + mailing side</figcaption>
+        <img class="preview__image" src="assets/card-back.png" alt="Back of the Killearn Neighbors Card with 6 more ads and USPS mailing block" />
         <div class="card-back">
           <div class="card-back__split">
             <div class="card-back__ads">
@@ -704,9 +706,13 @@
     var closeBtn = box.querySelector('.card-lightbox__close');
 
     function openFor(fig) {
-      var source = fig.querySelector('.card-fill, .card-back');
-      if (!source) return;
-      inner.replaceChildren(source.cloneNode(true));
+      var imgSrc = fig.dataset.image;
+      if (!imgSrc) return;
+      var img = document.createElement('img');
+      img.src = imgSrc;
+      img.className = 'card-lightbox__img';
+      img.alt = '';
+      inner.replaceChildren(img);
       box.dataset.variant = fig.dataset.preview || '';
       box.hidden = false;
       document.documentElement.style.overflow = 'hidden';

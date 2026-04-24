@@ -554,7 +554,7 @@ strong { font-weight: 600; color: var(--ink); }
 /* Click/tap target: the whole preview opens the enlarge modal */
 /* Tap target on the preview figures — cursor + focus ring only.
    Deliberately NO hover transforms: the cards already have their natural tilt,
-   and overriding it here changed desktop behavior. Touch-only affordance below. */
+   and overriding it here changed desktop behavior. */
 .preview[data-preview] {
   cursor: zoom-in;
   -webkit-tap-highlight-color: transparent;
@@ -564,6 +564,29 @@ strong { font-weight: 600; color: var(--ink); }
   outline: 2px solid var(--red);
   outline-offset: 6px;
   border-radius: 4px;
+}
+
+/* Mobile: render the card as a pre-built PNG image instead of HTML + ad PNGs
+   in a grid. The HTML version looked broken on narrow screens because square
+   ad PNGs letterboxed badly inside ~78px cells; the exported image is a
+   pixel-perfect snapshot of the desktop render, so mobile looks identical
+   to desktop. Default: image is hidden, HTML card renders (desktop behavior).
+   On small screens: swap them. */
+.preview__image {
+  display: none;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(26, 26, 26, 0.12);
+  box-shadow:
+    0 16px 34px rgba(26, 26, 26, 0.14),
+    0 4px 10px rgba(26, 26, 26, 0.06);
+  background: var(--paper);
+}
+
+@media (max-width: 900px) {
+  .preview__image { display: block; }
+  .preview[data-preview] .card-fill,
+  .preview[data-preview] .card-back { display: none; }
 }
 
 /* Mobile-only "Tap to enlarge" hint shown below each card */
@@ -652,7 +675,20 @@ strong { font-weight: 600; color: var(--ink); }
   justify-content: center;
 }
 
-/* Default (desktop + landscape phones): card renders naturally landscape */
+/* Default (desktop + landscape phones): card image renders naturally landscape */
+.card-lightbox__img {
+  width: min(calc(100vw - 48px), calc((100vh - 88px) * 11 / 6));
+  height: auto;
+  aspect-ratio: 11 / 6;
+  object-fit: contain;
+  display: block;
+  transform: rotate(0);
+  cursor: default;
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.4),
+    0 10px 20px rgba(0, 0, 0, 0.2);
+}
+/* Keep the old card selectors for safety, in case cached HTML still clones an HTML card */
 .card-lightbox .card-fill,
 .card-lightbox .card-back {
   width: min(calc(100vw - 48px), calc((100vh - 88px) * 11 / 6));
@@ -691,6 +727,10 @@ strong { font-weight: 600; color: var(--ink); }
    we size it so after rotating, the card spans ~100vh-48px and its rotated width
    (which is height / (11/6)) doesn't overflow 100vw. */
 @media (max-width: 900px) and (orientation: portrait) {
+  .card-lightbox__img {
+    width: min(calc(100vh - 48px), calc((100vw - 32px) * 11 / 6));
+    transform: rotate(90deg);
+  }
   .card-lightbox .card-fill,
   .card-lightbox .card-back {
     width: min(calc(100vh - 48px), calc((100vw - 32px) * 11 / 6));
