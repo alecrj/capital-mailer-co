@@ -239,7 +239,7 @@
     </p>
 
     <div class="preview-grid">
-      <figure class="preview">
+      <figure class="preview" data-preview="front" role="button" tabindex="0" aria-label="Tap to enlarge front of card">
         <figcaption class="preview__label">Front &middot; 8 ads + masthead</figcaption>
         <div class="card-fill">
           <div class="card-fill__masthead">
@@ -257,9 +257,10 @@
             <img class="card-ad card-ad--placeholder" src="assets/mock/yours.png" alt="Your Business Here" />
           </div>
         </div>
+        <span class="preview__hint" aria-hidden="true">Tap to enlarge <span class="preview__hint-arrow">&#8599;</span></span>
       </figure>
 
-      <figure class="preview">
+      <figure class="preview" data-preview="back" role="button" tabindex="0" aria-label="Tap to enlarge back of card">
         <figcaption class="preview__label">Back &middot; 6 ads + mailing side</figcaption>
         <div class="card-back">
           <div class="card-back__split">
@@ -299,6 +300,7 @@
             </div>
           </div>
         </div>
+        <span class="preview__hint" aria-hidden="true">Tap to enlarge <span class="preview__hint-arrow">&#8599;</span></span>
       </figure>
     </div>
 
@@ -682,6 +684,54 @@
         ticking = true;
       }
     }, { passive: true });
+  })();
+</script>
+
+<!-- Card preview enlarge modal: tap the small landscape preview to see it full-screen in portrait -->
+<dialog class="card-dialog" id="card-dialog" aria-label="Enlarged card preview">
+  <button class="card-dialog__close" type="button" aria-label="Close enlarged view">&#10005;</button>
+  <div class="card-dialog__inner"></div>
+</dialog>
+
+<script>
+  (function () {
+    var dialog = document.getElementById('card-dialog');
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+    var inner = dialog.querySelector('.card-dialog__inner');
+    var closeBtn = dialog.querySelector('.card-dialog__close');
+
+    function openFor(fig) {
+      var source = fig.querySelector('.card-fill, .card-back');
+      if (!source) return;
+      var clone = source.cloneNode(true);
+      inner.replaceChildren(clone);
+      dialog.dataset.variant = fig.dataset.preview || '';
+      dialog.showModal();
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function closeDialog() {
+      dialog.close();
+    }
+
+    document.querySelectorAll('.preview[data-preview]').forEach(function (fig) {
+      fig.addEventListener('click', function () { openFor(fig); });
+      fig.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openFor(fig);
+        }
+      });
+    });
+
+    closeBtn.addEventListener('click', closeDialog);
+    dialog.addEventListener('click', function (e) {
+      if (e.target === dialog || e.target === inner) closeDialog();
+    });
+    dialog.addEventListener('close', function () {
+      document.documentElement.style.overflow = '';
+      inner.replaceChildren();
+    });
   })();
 </script>
 </body>
