@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" shape-rendering="crispEdges">
+  <rect width="21" height="21" fill="#FAF6EC"/>
+  <!-- three corner position markers -->
+  <path fill="#1A1A1A" d="M0 0h7v7H0z M14 0h7v7h-7z M0 14h7v7H0z"/>
+  <path fill="#FAF6EC" d="M1 1h5v5H1z M15 1h5v5h-5z M1 15h5v5H1z"/>
+  <path fill="#1A1A1A" d="M2 2h3v3H2z M16 2h3v3h-3z M2 16h3v3H2z"/>
+  <!-- scattered data bits -->
+  <path fill="#1A1A1A" d="M8 0h1v2H8z M10 0h1v1h-1z M12 1h1v1h-1z M8 3h1v1H8z M10 3h2v1h-2z M13 3h1v1h-1z M9 5h1v1H9z M11 5h1v1h-1z M8 8h5v1H8z M14 8h1v1h-1z M16 8h1v1h-1z M18 8h2v1h-2z M0 8h1v1H0z M2 8h2v1H2z M5 8h2v1H5z M0 10h1v1H0z M2 10h2v1H2z M5 10h1v1H5z M7 10h2v1H7z M10 10h1v1h-1z M13 10h1v1h-1z M15 10h2v1h-2z M18 10h1v1h-1z M1 12h1v1H1z M3 12h2v1H3z M7 12h1v1H7z M9 12h3v1H9z M13 12h1v1h-1z M15 12h1v1h-1z M17 12h3v1h-3z M8 14h1v2H8z M10 14h1v1h-1z M12 14h1v1h-1z M14 14h2v1h-2z M17 14h1v1h-1z M19 14h2v1h-2z M9 16h1v1H9z M11 16h2v1h-2z M14 16h1v2h-1z M16 16h3v1h-3z M20 16h1v1h-1z M8 18h1v1H8z M10 18h2v1h-2z M13 18h1v1h-1z M15 18h1v1h-1z M17 18h1v1h-1z M19 18h1v1h-1z M9 20h1v1H9z M11 20h2v1h-2z M14 20h1v1h-1z M16 20h2v1h-2z M19 20h2v1h-2z"/>
+</svg>
