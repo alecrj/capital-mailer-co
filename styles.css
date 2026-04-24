@@ -690,26 +690,25 @@ strong { font-weight: 600; color: var(--ink); }
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
-/* Default (desktop + landscape phones): image fills ~98% of the viewport.
-   Tight 16px padding off the edges, whichever dimension constrains wins. */
+/* Edge-to-edge sizing: card fills 100% of whichever dimension constrains it
+   while preserving 11:6 aspect ratio. No padding — close button overlays it. */
 .card-lightbox__img {
-  width: min(calc(100vw - 24px), calc((100vh - 48px) * 11 / 6));
+  width: min(100vw, calc(100vh * 11 / 6));
   height: auto;
   aspect-ratio: 11 / 6;
   object-fit: contain;
   display: block;
   transform: rotate(0);
   cursor: default;
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.45),
-    0 10px 20px rgba(0, 0, 0, 0.25);
 }
-/* Fallback: same sizing for cached HTML card renders */
 .card-lightbox .card-fill,
 .card-lightbox .card-back {
-  width: min(calc(100vw - 24px), calc((100vh - 48px) * 11 / 6));
+  width: min(100vw, calc(100vh * 11 / 6));
   max-width: none;
   aspect-ratio: 11 / 6;
   transform: rotate(0) !important;
@@ -746,12 +745,12 @@ strong { font-weight: 600; color: var(--ink); }
    (which is height / (11/6)) doesn't overflow 100vw. */
 @media (max-width: 900px) and (orientation: portrait) {
   .card-lightbox__img {
-    width: min(calc(100vh - 24px), calc((100vw - 16px) * 11 / 6));
+    width: min(100vh, calc(100vw * 11 / 6));
     transform: rotate(90deg);
   }
   .card-lightbox .card-fill,
   .card-lightbox .card-back {
-    width: min(calc(100vh - 24px), calc((100vw - 16px) * 11 / 6));
+    width: min(100vh, calc(100vw * 11 / 6));
     transform: rotate(90deg) !important;
   }
   .card-lightbox__rotate-hint { display: block; }
