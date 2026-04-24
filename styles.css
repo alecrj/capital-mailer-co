@@ -596,15 +596,15 @@ strong { font-weight: 600; color: var(--ink); }
   border-radius: 4px;
 }
 
-@media (max-width: 900px) {
-  .preview__image,
-  .hero__image { display: block; }
+/* Show PNG mockups on EVERY viewport — they are the single source of truth.
+   The HTML-rendered cards had clipping/overflow bugs on real browsers; the PNG
+   is the actual print mockup, so it's pixel-perfect everywhere. */
+.preview__image,
+.hero__image { display: block; }
 
-  /* Hide HTML card renderings on mobile — PNG image replaces them */
-  .preview[data-preview] .card-fill,
-  .preview[data-preview] .card-back { display: none; }
-  .hero__card[data-preview] .hero__stack { display: none; }
-}
+.preview[data-preview] .card-fill,
+.preview[data-preview] .card-back { display: none; }
+.hero__card[data-preview] .hero__stack { display: none; }
 
 /* Mobile-only "Tap to enlarge" hint shown below each card */
 .preview__hint {
