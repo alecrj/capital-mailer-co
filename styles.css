@@ -1832,6 +1832,46 @@ strong { font-weight: 600; color: var(--ink); }
   /* Hide the back card in hero on mobile — reduces scroll distance before copy reads */
   .hero__stack .card-back--hero { display: none; }
   .hero__stack { gap: 0; }
+
+  /* Preview-section back card: stack ads + mail block vertically on mobile so both are readable */
+  .card-back { aspect-ratio: auto; }
+  .card-back__split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .card-back__ads {
+    padding: 14px 14px 10px;
+  }
+  .card-back__mail {
+    border-left: none;
+    border-top: 1px dashed rgba(26, 26, 26, 0.2);
+    padding: 12px 14px 14px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .card-back__mail-top {
+    flex-direction: row;
+    gap: 12px;
+    flex: 1 1 auto;
+    align-items: flex-start;
+  }
+  .card-back__address {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .card-back__stamp {
+    position: static;
+    align-self: flex-end;
+  }
+
+  /* Front card: slight aspect loosening so ads read bigger on phone */
+  .card-fill {
+    aspect-ratio: 16 / 10;
+  }
   .slot-grid { grid-template-columns: repeat(2, 1fr); }
   .stats { grid-template-columns: 1fr; }
   .section { padding: 64px 0; }
